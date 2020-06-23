@@ -34,25 +34,35 @@ pub fn lcs(orig: &str, edit: &str, split: &str) -> (i32, String) {
     let mut idx: Vec<usize> = Vec::with_capacity(N * M);
     idx.resize(N * M, 0);
 
-    for i in 0..N {
-        for j in 0..M {
-            if b[j] == a[i] {
-                if i == 0 || j == 0 {
-                    idx[i * M + j] = 1;
-                } else {
-                    idx[i * M + j] = idx[(i - 1) * M + j - 1] + 1;
+    {
+        let mut i = 0;
+        while i < N {
+            let mut j = 0;
+            while j < M {
+                {
+                    let i = i;
+                    let j = j;
+                    if b[j] == a[i] {
+                        if i == 0 || j == 0 {
+                            idx[i * M + j] = 1;
+                        } else {
+                            idx[i * M + j] = idx[(i - 1) * M + j - 1] + 1;
+                        }
+                    } else if i == 0 {
+                        if j == 0 {
+                            idx[i * M + j] = 0;
+                        } else {
+                            idx[i * M + j] = idx[i * M + j - 1];
+                        }
+                    } else if j == 0 {
+                        idx[i * M + j] = idx[(i - 1) * M + j];
+                    } else {
+                        idx[i * M + j] = max(idx[i * M + j - 1], idx[(i - 1) * M + j]);
+                    }
                 }
-            } else if i == 0 {
-                if j == 0 {
-                    idx[i * M + j] = 0;
-                } else {
-                    idx[i * M + j] = idx[i * M + j - 1];
-                }
-            } else if j == 0 {
-                idx[i * M + j] = idx[(i - 1) * M + j];
-            } else {
-                idx[i * M + j] = max(idx[i * M + j - 1], idx[(i - 1) * M + j]);
+                j += 1;
             }
+            i += 1;
         }
     }
 
